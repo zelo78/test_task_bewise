@@ -10,7 +10,7 @@
 
 1. Клонировать проект в пустую папку:
 ```shell
-git clone https://github.com/zelo78/DRF-project-template.git .
+git clone https://github.com/zelo78/test_task_bewise.git .
 ```
 2. Переименовать файл `start.env` в `.env` (Он должен находится в корне проекта, рядом с `README.md`)
 3. Создать и запустить контейнер:
