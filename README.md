@@ -12,16 +12,17 @@
 ```shell
 git clone https://github.com/zelo78/test_task_bewise.git .
 ```
-2. Переименовать файл `start.env` в `.env` (Он должен находится в корне проекта, рядом с `README.md`)
-3. Создать и запустить контейнер:
+2. Копировать файл `start.env` как `.env` (Он должен находится в корне проекта, рядом с `README.md`)
+```shell
+cp start.env .env
+```
+3. Создать и запустить контейнер (при запуске котейнера будут созданы и применены миграции):
 ```shell
 docker-compose build
 docker-compose up -d
 ``` 
-4. Создать и применить миграции, создать суперпользователя:
+4. Создать суперпользователя:
 ```shell
-docker exec app python manage.py makemigrations
-docker exec app python manage.py migrate
 docker exec -it app python manage.py createsuperuser
 ```
 
