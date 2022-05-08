@@ -16,7 +16,7 @@ class QuestionView(generics.ListAPIView):
     """
     queryset = Question.objects.all().order_by("id")
     serializer_class = QuestionSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def post(self, request, *args, **kwargs):
         last_question = Question.objects.order_by("id").last()

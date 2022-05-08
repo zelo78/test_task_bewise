@@ -26,10 +26,26 @@ docker-compose up -d
 docker exec -it app python manage.py createsuperuser
 ```
 
+### Примеры запросов
+
+1. Список полученных вопросов (имеющихся в локальной БД)
+```shell
+curl http://0.0.0.0:8000/api/questions/
+```
+
+2. Получение вопросов из внешнего сервиса в локальную БД
+```shell
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"questions_num": 10}' \
+  http://0.0.0.0:8000/api/questions/
+```
+
 ### Реализованные URL
 
+- <http://0.0.0.0:8000/api/questions/> - API для добавления вопросов в базу данных
 - <http://0.0.0.0:8000/admin/> - интерфейс администрирования
-- <http://0.0.0.0:8000/api/> - API интерфейс
 - <http://0.0.0.0:8000/api/token/> - API авторизации
 
 ### Swagger/OpenAPI 2.0 specifications
@@ -46,7 +62,7 @@ docker exec -it app python manage.py createsuperuser
 curl \
   -X POST \
   -H "Content-Type: application/json" \
-  -d '{"username": "oleg", "password": "12345678"}' \
+  -d '{"questions_num": 10, "username": "oleg"}' \
   http://127.0.0.1:8000/api/token/
 ```
 2. Авторизация с использованием токена
