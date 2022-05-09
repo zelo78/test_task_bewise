@@ -23,7 +23,7 @@ docker-compose up -d
 ``` 
 4. Создать суперпользователя:
 ```shell
-docker exec -it app python manage.py createsuperuser
+docker exec -it app python manage.py createsuperuser --username USER
 ```
 
 ### Примеры запросов
@@ -32,15 +32,84 @@ docker exec -it app python manage.py createsuperuser
 ```shell
 curl http://0.0.0.0:8000/api/questions/
 ```
+Получаем список имеющихся вопросов:
+```text
+{
+    "count": 63,
+    "next": "http://0.0.0.0:8000/api/questions/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "id": 22001,
+            "answer": "Rosa Parks",
+            "question": "This Montgomery seamstress was thrown off a bus one other time before her famous Dec. 1, 1955 incident",
+            "value": 200,
+            "airdate": "1998-05-21T16:00:00+04:00",
+            "created_at": "2014-02-12T02:58:58.201000+04:00",
+            "updated_at": "2014-02-12T02:58:58.201000+04:00",
+            "category": {
+                "internal_id": 31,
+                "id": 2278,
+                "title": "black americans",
+                "created_at": "2014-02-12T02:58:58.018000+04:00",
+                "updated_at": "2014-02-12T02:58:58.018000+04:00",
+                "clues_count": 15
+            }
+        },
+        <и так далее>
+    ]
+}
+```
 
-2. Получение вопросов из внешнего сервиса в локальную БД
+2. Получение вопросов из внешнего сервиса в локальную БД, авторизация с помощью BasicAuthentication 
 ```shell
 curl \
   -X POST \
   -H "Content-Type: application/json" \
   -d '{"questions_num": 10}' \
+  -u USER:PASSWORD \
   http://0.0.0.0:8000/api/questions/
 ```
+
+3. Получение вопросов из внешнего сервиса в локальную БД, авторизация с помощью JWT
+- создаём токен авторизации
+```shell
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"username": "USER", "password": "PASSWORD"}' \
+  http://127.0.0.1:8000/api/token/
+```
+Получаем ответ вида
+> {"refresh":"ey...I0","access":"ey...lQ"}
+
+- авторизуемся с помощью токена:
+```shell
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ey...lQ" \
+  -d '{"questions_num": 10}' \
+  http://0.0.0.0:8000/api/questions/
+```
+Получаем ответ вида (последний ранее полученный вопрос):
+> {
+    "id": 105357,
+    "answer": "doge",
+    "question": "Several members of the Dandolo family held this Venetian job",
+    "value": 800,
+    "airdate": "2011-01-27T15:00:00+03:00",
+    "created_at": "2014-02-14T06:12:08.090000+04:00",
+    "updated_at": "2014-02-14T06:12:08.090000+04:00",
+    "category": {
+        "internal_id": 94,
+        "id": 14206,
+        "title": "in god we trust",
+        "created_at": "2014-02-14T06:12:07.105000+04:00",
+        "updated_at": "2014-02-14T06:12:07.105000+04:00",
+        "clues_count": 5
+    }
+}
 
 ### Реализованные URL
 
@@ -62,14 +131,14 @@ curl \
 curl \
   -X POST \
   -H "Content-Type: application/json" \
-  -d '{"questions_num": 10, "username": "oleg"}' \
-  http://127.0.0.1:8000/api/token/
+  -d '{"username": "USER", "password": "PASSWORD"}' \
+  http://0.0.0.0:8000/api/token/
 ```
 2. Авторизация с использованием токена
 ```shell
 curl \
   -H "Authorization: Bearer <token>" \
-  http://127.0.0.1:8000/api/users/
+  http://0.0.0.0:8000/api/questions
 ```
 
 ## Тестовое задание
